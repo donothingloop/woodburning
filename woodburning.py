@@ -6,6 +6,7 @@ parser = argparse.ArgumentParser(description="Woodburning PNG2Gcode converter V0
 parser.add_argument('--dotsize', nargs='?', type=float, help='size of the dot in mm, best results between 0.2 and 1.0, default 0.5')
 parser.add_argument('--zlift', nargs='?', type=float, help='amount of z-lift for moving, default 1.0')
 parser.add_argument('--zspeed', nargs='?', type=int, help='speed of the z-axis, default 200')
+parser.add_argument('--factor', nargs='?', type=int, help='set it higher and the printing will get darker, usually between 150 and 250, default 200')
 parser.add_argument('image', help='image to convert, in PNG format')
 
 args = parser.parse_args()
@@ -24,6 +25,11 @@ zspeed = args.zspeed
 if zspeed == None:
 	zspeed = 200
 
+factor = args.factor
+
+if factor == None:
+	factor = 200
+
 im = Image.open(args.image)
 pix = im.load()
 
@@ -40,7 +46,7 @@ print("; ")
 print("G91")
 
 def burn(strength):
-	strength *= 2
+	strength *= (factor/100)
 	print("G1 Z-%.4f F%03d" % (zlift,zspeed))
 	print("G4 P%03d" % int(strength))
 	print("G1 Z%.4f F%03d" % (zlift,zspeed))
