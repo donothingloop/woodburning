@@ -1,4 +1,4 @@
-# woodburning
+# woodburning.py
 A PNG2Gcode converter for woodburning with a 3D printer
 
 I use a soldering iron which is secured in place on the Z-axis bar of a K8200 3D printer.
