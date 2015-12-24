@@ -34,6 +34,7 @@ im = Image.open(args.image)
 pix = im.load()
 
 size = im.size
+duration = 0
 
 print(";Created by Woodburning PNG2Gcode converter V0.1")
 print(";by donothingloop <donothingloop@gmail.com>")
@@ -46,13 +47,15 @@ print("; ")
 print("G91")
 
 def burn(strength):
+        global duration
 	strength *= (factor/100)
 	print("G1 Z-%.4f F%03d" % (zlift,zspeed))
 	print("G4 P%03d" % int(strength))
 	print("G1 Z%.4f F%03d" % (zlift,zspeed))
+        duration += strength
 
 def handlePix(x,y):
-	val = pix[x,y][1]
+	val = pix[x,y][0]
 
 	if val > 0:
 		burn(val)
@@ -68,3 +71,4 @@ for y in range(0,size[1]):
 	print("G1 X-%.4f F6000" % dist)	
 	print("G1 Y-%.3f F6000" % dotsize)
 
+print(";The print will take AT LEAST %d ms" % duration)
