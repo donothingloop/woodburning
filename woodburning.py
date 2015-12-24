@@ -3,8 +3,9 @@ from PIL import Image
 import argparse
 
 parser = argparse.ArgumentParser(description="Woodburning PNG2Gcode converter V0.1\n(c) 2015 donothingloop")
-parser.add_argument('dotsize', metavar='-d', nargs='?', type=float, help='size of the dot in mm, best results between 0.2 and 1.0, default 0.5')
-parser.add_argument('zlift', metavar='-z', nargs='?', type=float, help='amount of z-lift for moving, default 1.0')
+parser.add_argument('--dotsize', nargs='?', type=float, help='size of the dot in mm, best results between 0.2 and 1.0, default 0.5')
+parser.add_argument('--zlift', nargs='?', type=float, help='amount of z-lift for moving, default 1.0')
+parser.add_argument('--zspeed', nargs='?', type=int, help='speed of the z-axis, default 200')
 parser.add_argument('image', help='image to convert, in PNG format')
 
 args = parser.parse_args()
@@ -18,7 +19,12 @@ zlift = args.zlift
 if zlift == None:
 	zlift = 1.0
 
-im = Image.open(sys.argv[1])
+zspeed = args.zspeed
+
+if zspeed == None:
+	zspeed = 200
+
+im = Image.open(args.image)
 pix = im.load()
 
 size = im.size
@@ -35,9 +41,9 @@ print("G91")
 
 def burn(strength):
 	strength *= 2
-	print("G1 Z-%.4f F200" % zlift)
+	print("G1 Z-%.4f F%03d" % (zlift,zspeed))
 	print("G4 P%03d" % int(strength))
-	print("G1 Z%.4f F200" % zlift)
+	print("G1 Z%.4f F%03d" % (zlift,zspeed))
 
 def handlePix(x,y):
 	val = pix[x,y][1]
